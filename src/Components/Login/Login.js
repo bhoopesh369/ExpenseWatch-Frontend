@@ -4,7 +4,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth } from '../../utils/firebase';
-import { FacebookAuthProvider } from "firebase/auth";
+import { FacebookAuthProvider, TwitterAuthProvider, GithubAuthProvider } from "firebase/auth";
 
 import { FcGoogle } from "react-icons/fc";
 import { BsFacebook } from "react-icons/bs";
@@ -13,13 +13,13 @@ import { FaGithub } from "react-icons/fa6";
 
 
 const Login = () => {
-    
+
     const navigate = useNavigate();
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('');
 
-   
+
 
     const onSubmit = async (e) => {
         e.preventDefault()
@@ -44,67 +44,120 @@ const Login = () => {
             });
     }
 
-    
+
     const onGoogleSubmit = async (e) => {
         e.preventDefault()
         const auth = getAuth();
         const provider = new GoogleAuthProvider();
         await signInWithPopup(auth, provider)
-        .then((result) => {
-            // This gives you a Google Access Token. You can use it to access the Google API.
-            const credential = GoogleAuthProvider.credentialFromResult(result);
-            const token = credential.accessToken;
-            // The signed-in user info.
-            const user = result.user;
-            console.log(user);
+            .then((result) => {
+                // This gives you a Google Access Token. You can use it to access the Google API.
+                const credential = GoogleAuthProvider.credentialFromResult(result);
+                const token = credential.accessToken;
+                // The signed-in user info.
+                const user = result.user;
+                console.log(user);
                 window.alert('Login successful! Welcome, ' + user.email);
                 navigate("/home")
-            
-        }).catch((error) => {
-            // Handle Errors here.
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            // The email of the user's account used.
-            const email = error.customData.email;
-            // The AuthCredential type that was used.
-            const credential = GoogleAuthProvider.credentialFromError(error);
-            window.alert('Login failed');
-            
-        });
+
+            }).catch((error) => {
+                // Handle Errors here.
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                // The email of the user's account used.
+                const email = error.customData.email;
+                // The AuthCredential type that was used.
+                const credential = GoogleAuthProvider.credentialFromError(error);
+                window.alert('Login failed');
+
+            });
     }
-        const onFBSubmit = async (e) => {
-            e.preventDefault()
-            const auth = getAuth();
-            const provider = new FacebookAuthProvider();
-            
-            await signInWithPopup(auth, provider)
+    const onFBSubmit = async (e) => {
+        e.preventDefault()
+        const auth = getAuth();
+        const provider = new FacebookAuthProvider();
+
+        await signInWithPopup(auth, provider)
             .then((result) => {
                 // This gives you a Faceboob Access Token. You can use it to access the Google API.
                 const user = result.user;
 
-            // This gives you a Facebook Access Token. You can use it to access the Facebook API.
-            const credential = FacebookAuthProvider.credentialFromResult(result);
-            const accessToken = credential.accessToken;
+                // This gives you a Facebook Access Token. You can use it to access the Facebook API.
+                const credential = FacebookAuthProvider.credentialFromResult(result);
+                const accessToken = credential.accessToken;
                 console.log(user);
-                    //window.alert('Login successful! Welcome, ' + user.email);
-                    navigate("/home")
-                
+                window.alert('Login successful! Welcome, ' + user.email);
+                navigate("/home")
+
             }).catch((error) => {
                 const errorCode = error.code;
                 const errorMessage = error.message;
                 const email = error.customData.email;
                 const credential = FacebookAuthProvider.credentialFromError(error);
                 window.alert('Login failed');
-                
+
             });
-        
-    }
+        }
+
+        const onTwitterSubmit = async (e) => {
+            e.preventDefault()
+            const auth = getAuth();
+            const provider = new TwitterAuthProvider();
+            await signInWithPopup(auth, provider)
+                .then((result) => {
+                    // This gives you a the Twitter OAuth 1.0 Access Token and Secret.
+                    const credential = TwitterAuthProvider.credentialFromResult(result);
+                    const token = credential.accessToken;
+                    const secret = credential.secret;
+                    const user = result.user;
+                    window.alert('Login successful! Welcome, ' + user.email);
+
+                    // ...
+                }).catch((error) => {
+                    // Handle Errors here.
+                    const errorCode = error.code;
+                    const errorMessage = error.message;                    
+                    const email = error.customData.email;
+                    // The AuthCredential type that was used.
+                    const credential = TwitterAuthProvider.credentialFromError(error);
+                    window.alert('Login failed');
+                    // ...
+                });     
+        }
+
+        const onGitSubmit = async (e) => {
+            e.preventDefault()
+            const auth = getAuth();
+            const provider = new GithubAuthProvider();
+            await signInWithPopup(auth, provider)
+                .then((result) => {
+                    // This gives you a the Twitter OAuth 1.0 Access Token and Secret.
+                    const credential = GithubAuthProvider.credentialFromResult(result);
+                    const token = credential.accessToken;
+                    
+                    const user = result.user;
+                    window.alert('Login successful! Welcome, ' + user.email);
+
+                    // ...
+                }).catch((error) => {
+                    // Handle Errors here.
+                    const errorCode = error.code;
+                    const errorMessage = error.message;                    
+                    const email = error.customData.email;
+                    // The AuthCredential type that was used.
+                    const credential = GithubAuthProvider.credentialFromError(error);
+                    window.alert('Login failed');
+                    // ...
+                });     
+        }
+    
 
     return (
-        <main style={{ textAlign: 'center', marginTop: '50px', width: '100vw', height: '100vh',
-    } }>
+        <main style={{
+            textAlign: 'center', marginTop: '50px', width: '100vw', height: '100vh',
+        }}>
             <section>
-                <div style={{ maxWidth: '400px', margin: '0 auto', backgroundColor: '#eee', padding: '40px', borderRadius: '30px', boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',  }}>
+                <div style={{ maxWidth: '400px', margin: '0 auto', backgroundColor: '#eee', padding: '40px', borderRadius: '30px', boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)', }}>
                     <h1 style={{ color: '#333' }}>Login</h1>
                     <form style={{ marginTop: '20px' }}>
                         <div style={{ marginBottom: '15px' }}>
@@ -140,47 +193,47 @@ const Login = () => {
                         >
                             Login
                         </button>
-                        <div style={{height: '30px', fontFamily: 'helvetica', fontWeight: '500'}}>
+                        <div style={{ height: '30px', fontFamily: 'helvetica', fontWeight: '500' }}>
                             -------------- OR WITH -------------
                         </div>
-                        <div style={{display: 'flex', gap: '7.5px' }}>
-                        <button
-                            type="submit"
-                            onClick={onGoogleSubmit}
-                            style={{ width: '50%', padding: '10px', color: 'black', backgroundColor: '#D3D3D3', border: 'black 2px solid', color: '#fff', border: 'none', borderRadius: '3px', fontSize: '18px', cursor: 'pointer', marginTop: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                        >
-                            <FcGoogle size={
-                                25
-                            } />
-                            <span style={{color: 'black', marginLeft: '7.5px', fontFamily: 'verdana', fontWeight: '400'}}>Google</span>
-                        </button>
+                        <div style={{ display: 'flex', gap: '7.5px' }}>
+                            <button
+                                type="submit"
+                                onClick={onGoogleSubmit}
+                                style={{ width: '50%', padding: '10px', color: 'black', backgroundColor: '#D3D3D3', border: 'black 2px solid', color: '#fff', border: 'none', borderRadius: '3px', fontSize: '18px', cursor: 'pointer', marginTop: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                            >
+                                <FcGoogle size={
+                                    25
+                                } />
+                                <span style={{ color: 'black', marginLeft: '7.5px', fontFamily: 'verdana', fontWeight: '400' }}>Google</span>
+                            </button>
 
-                        <button
-                            type="submit"
-                            onClick={onFBSubmit}
-                            style={{ width: '50%', padding: '5px', backgroundColor: '#1877F2', color: '#fff', border: 'none', borderRadius: '3px', fontSize: '18px', cursor: 'pointer', marginTop: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                        >
-                            <BsFacebook size={25} />
-                            acebook
-                        </button>
+                            <button
+                                type="submit"
+                                onClick={onFBSubmit}
+                                style={{ width: '50%', padding: '5px', backgroundColor: '#1877F2', color: '#fff', border: 'none', borderRadius: '3px', fontSize: '18px', cursor: 'pointer', marginTop: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                            >
+                                <BsFacebook size={25} />
+                                acebook
+                            </button>
                         </div>
-                        <div style={{display: 'flex', gap:'7.5px'}}>
-                        <button
-                            type="submit"
-                            onClick={onFBSubmit}
-                            style={{ width: '50%', padding: '10px', backgroundColor: '#444444', color: '#fff', border: 'none', borderRadius: '3px', fontSize: '18px', cursor: 'pointer', marginTop: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                        >
-                            <FaTwitter size={25} />
-                            <span style={{marginLeft: '7.5px', fontFamily:'helvetica'}}>Twitter</span>
-                        </button>
-                        <button
-                            type="submit"
-                            onClick={onFBSubmit}
-                            style={{ width: '50%', padding: '5px', backgroundColor: '#333333', color: '#fff', border: 'none', borderRadius: '3px', fontSize: '18px', cursor: 'pointer', marginTop: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                        >
-                            <FaGithub size={25} />
-                            <span style={{marginLeft: '7.5px', fontFamily:'helvetica'}}>Github</span>
-                        </button>
+                        <div style={{ display: 'flex', gap: '7.5px' }}>
+                            <button
+                                type="submit"
+                                onClick={onTwitterSubmit}
+                                style={{ width: '50%', padding: '10px', backgroundColor: '#444444', color: '#fff', border: 'none', borderRadius: '3px', fontSize: '18px', cursor: 'pointer', marginTop: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                            >
+                                <FaTwitter size={25} />
+                                <span style={{ marginLeft: '7.5px', fontFamily: 'helvetica' }}>Twitter</span>
+                            </button>
+                            <button
+                                type="submit"
+                                onClick={onGitSubmit}
+                                style={{ width: '50%', padding: '5px', backgroundColor: '#333333', color: '#fff', border: 'none', borderRadius: '3px', fontSize: '18px', cursor: 'pointer', marginTop: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                            >
+                                <FaGithub size={25} />
+                                <span style={{ marginLeft: '7.5px', fontFamily: 'helvetica' }}>Github</span>
+                            </button>
                         </div>
 
                     </form>

@@ -24,6 +24,18 @@ function Form() {
         setError('')
     }
 
+    function notifyUser(msg) {
+        if (Notification.permission === 'granted') {
+            new Notification(msg);
+        } else if (Notification.permission !== 'denied') {
+            Notification.requestPermission().then(permission => {
+                if (permission === 'granted') {
+                    new Notification(msg);
+                }
+            });
+        }
+    }
+
     const handleSubmit = e => {
         e.preventDefault()
         addIncome(inputState)
@@ -34,6 +46,7 @@ function Form() {
             category: '',
             description: '',
         })
+        notifyUser('Income added successfully!');
     }
 
     return (

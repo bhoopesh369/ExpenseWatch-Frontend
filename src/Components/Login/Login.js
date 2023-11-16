@@ -18,9 +18,20 @@ const Login = () => {
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('');
-
-
-
+    
+    
+    function notifyUser(email) {
+        if (Notification.permission === 'granted') {
+            new Notification('Login successful!', { body: 'Welcome, ' + email });
+        } else if (Notification.permission !== 'denied') {
+            Notification.requestPermission().then(permission => {
+                if (permission === 'granted') {
+                    new Notification('Login successful!', { body: 'Welcome, ' + email });
+                }
+            });
+        }
+    }
+    
     const onSubmit = async (e) => {
         e.preventDefault()
 
@@ -32,6 +43,7 @@ const Login = () => {
                 const user = userCredential.user;
                 console.log(user);
                 window.alert('Login successful! Welcome, ' + user.email);
+                notifyUser(user.email);
                 navigate("/home")
                 // ...
             })
@@ -58,8 +70,9 @@ const Login = () => {
                 const user = result.user;
                 console.log(user);
                 window.alert('Login successful! Welcome, ' + user.email);
+                notifyUser(user.email);
+                
                 navigate("/home")
-
             }).catch((error) => {
                 // Handle Errors here.
                 const errorCode = error.code;
@@ -87,6 +100,7 @@ const Login = () => {
                 const accessToken = credential.accessToken;
                 console.log(user);
                 window.alert('Login successful! Welcome, ' + user.email);
+                notifyUser(user.email);
                 navigate("/home")
 
             }).catch((error) => {
@@ -97,60 +111,61 @@ const Login = () => {
                 window.alert('Login failed');
 
             });
-        }
+    }
 
-        const onTwitterSubmit = async (e) => {
-            e.preventDefault()
-            const auth = getAuth();
-            const provider = new TwitterAuthProvider();
-            await signInWithPopup(auth, provider)
-                .then((result) => {
-                    // This gives you a the Twitter OAuth 1.0 Access Token and Secret.
-                    const credential = TwitterAuthProvider.credentialFromResult(result);
-                    const token = credential.accessToken;
-                    const secret = credential.secret;
-                    const user = result.user;
-                    window.alert('Login successful! Welcome, ' + user.email);
+    const onTwitterSubmit = async (e) => {
+        e.preventDefault()
+        const auth = getAuth();
+        const provider = new TwitterAuthProvider();
+        await signInWithPopup(auth, provider)
+            .then((result) => {
+                // This gives you a the Twitter OAuth 1.0 Access Token and Secret.
+                const credential = TwitterAuthProvider.credentialFromResult(result);
+                const token = credential.accessToken;
+                const secret = credential.secret;
+                const user = result.user;
+                window.alert('Login successful! Welcome, ' + user.email);
+                notifyUser(user.email);
 
-                    // ...
-                }).catch((error) => {
-                    // Handle Errors here.
-                    const errorCode = error.code;
-                    const errorMessage = error.message;                    
-                    const email = error.customData.email;
-                    // The AuthCredential type that was used.
-                    const credential = TwitterAuthProvider.credentialFromError(error);
-                    window.alert('Login failed');
-                    // ...
-                });     
-        }
+                // ...
+            }).catch((error) => {
+                // Handle Errors here.
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                const email = error.customData.email;
+                // The AuthCredential type that was used.
+                const credential = TwitterAuthProvider.credentialFromError(error);
+                window.alert('Login failed');
+                // ...
+            });
+    }
 
-        const onGitSubmit = async (e) => {
-            e.preventDefault()
-            const auth = getAuth();
-            const provider = new GithubAuthProvider();
-            await signInWithPopup(auth, provider)
-                .then((result) => {
-                    // This gives you a the Twitter OAuth 1.0 Access Token and Secret.
-                    const credential = GithubAuthProvider.credentialFromResult(result);
-                    const token = credential.accessToken;
-                    
-                    const user = result.user;
-                    window.alert('Login successful! Welcome, ' + user.email);
+    const onGitSubmit = async (e) => {
+        e.preventDefault()
+        const auth = getAuth();
+        const provider = new GithubAuthProvider();
+        await signInWithPopup(auth, provider)
+            .then((result) => {
+                // This gives you a the Twitter OAuth 1.0 Access Token and Secret.
+                const credential = GithubAuthProvider.credentialFromResult(result);
+                const token = credential.accessToken;
 
-                    // ...
-                }).catch((error) => {
-                    // Handle Errors here.
-                    const errorCode = error.code;
-                    const errorMessage = error.message;                    
-                    const email = error.customData.email;
-                    // The AuthCredential type that was used.
-                    const credential = GithubAuthProvider.credentialFromError(error);
-                    window.alert('Login failed');
-                    // ...
-                });     
-        }
-    
+                const user = result.user;
+                window.alert('Login successful! Welcome, ' + user.email);
+                notifyUser(user.email);
+                // ...
+            }).catch((error) => {
+                // Handle Errors here.
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                const email = error.customData.email;
+                // The AuthCredential type that was used.
+                const credential = GithubAuthProvider.credentialFromError(error);
+                window.alert('Login failed');
+                // ...
+            });
+    }
+
 
     return (
         <main style={{
